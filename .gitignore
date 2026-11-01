@@ -1,3 +1,21 @@
+# Virtual Environments
 env/
+venv/
+ENV/
+
+# Python Bytecode & Cache
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+
+# Distribution & Packaging Artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# IDE & Editor Files (e.g., VS Code, PyCharm)
+.vscode/
+.idea/
+.DS_Store
