@@ -3,14 +3,15 @@
 Provides utilities to locate the Tesseract OCR engine binary, initialize configuration,
 and extract textual data from images using PyTesseract.
 """
-
-import pytesseract
-
 import sys
 import shutil
+import platform
 from pathlib import Path
 
-def read_image_text(image):
+import pytesseract
+from PIL import Image
+
+def read_image_text(image: Image.Image) -> str:
     """Extract and lowercase text from an image object using Tesseract OCR.
 
     Args:
@@ -27,18 +28,22 @@ def read_image_text(image):
 
     return text
 
-def find_tesseract():
+def find_tesseract() -> Path | None:
     """Locate the Tesseract executable path in bundled application directories or system PATH.
 
     Returns:
-        Path or None: Path object pointing to the Tesseract executable if found, otherwise None.
+        Path | None: Path object pointing to the Tesseract executable if found, otherwise None.
     """
     # Check bundled Tesseract first
     if getattr(sys, "frozen", False):
+
+        # Determine the correct binary name depending on the OS
+        exe_name = "tesseract.exe" if platform.system() == "Windows" else "tesseract"
+
         bundled = (
             Path(sys.executable).parent
             / "tesseract"
-            / "tesseract.exe"
+            / exe_name
         )
 
         if bundled.exists():
@@ -52,7 +57,7 @@ def find_tesseract():
 
     return None
 
-def init_ocr():
+def init_ocr() -> None:
     """Initialize Tesseract OCR by configuring the command path, raising an error if unavailable.
 
     Raises:

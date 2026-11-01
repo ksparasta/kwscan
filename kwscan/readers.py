@@ -3,18 +3,19 @@
 Handles reading text contents from various file formats including plain text (.txt),
 Microsoft Word documents (.docx), Portable Document Files (.pdf), and image files (.jpg, .png).
 """
+from io import BytesIO
+from pathlib import Path
+
 from docx import Document
 import pypdf
 from PIL import Image, UnidentifiedImageError
 from .ocr import read_image_text
 
-from io import BytesIO
-
-def read_txt(path):
+def read_txt(path: str | Path) -> str:
     """Read and return lowercase text from a plain text file, handling UTF-8 and CP1252 encodings.
 
     Args:
-        path (str or Path): Path to the text file.
+        path (str | Path): Path to the text file.
 
     Returns:
         str: The file contents converted to lowercase.
@@ -26,11 +27,11 @@ def read_txt(path):
         with open(path, "r", encoding="cp1252") as file:
             return file.read().lower()
 
-def read_image(path):
+def read_image(path: str | Path) -> str:
     """Read and extract text from a standalone image file using OCR.
 
     Args:
-        path (str or Path): Path to the image file.
+        path (str | Path): Path to the image file.
 
     Returns:
         str: The extracted lowercase text from the image.
@@ -46,7 +47,7 @@ def read_image(path):
             f"Could not open image: {error}"
         ) from error
 
-def read_pdf_image(pdf_image):
+def read_pdf_image(pdf_image) -> str:
     """Extract text from an image embedded within a PDF file using OCR.
 
     Args:
@@ -59,7 +60,7 @@ def read_pdf_image(pdf_image):
         RuntimeError: If the embedded image data cannot be opened or parsed.
     """
     try:
-        with  Image.open(BytesIO(pdf_image.data)) as image:
+        with Image.open(BytesIO(pdf_image.data)) as image:
             return read_image_text(image)
     except (UnidentifiedImageError, OSError) as error:
         raise RuntimeError(
@@ -67,12 +68,12 @@ def read_pdf_image(pdf_image):
         ) from error
 
     
-def read_pdf(path, ocr):
+def read_pdf(path: str | Path, ocr: bool = False) -> str:
     """Extract text from all pages and optionally embedded images of a PDF document.
 
     Args:
-        path (str or Path): Path to the PDF file.
-        ocr (bool): Flag indicating whether to process embedded images with OCR.
+        path (str | Path): Path to the PDF file.
+        ocr (bool, optional): Flag indicating whether to process embedded images with OCR.
 
     Returns:
         str: Combined lowercase text extracted from the document.
@@ -111,11 +112,11 @@ def read_pdf(path, ocr):
     
     return "\n".join(text)
 
-def read_docx(path, ocr=False):
+def read_docx(path: str | Path, ocr: bool = False) -> str:
     """Extract text from paragraphs, headers, footers, tables, and optionally images of a Word document.
 
     Args:
-        path (str or Path): Path to the Word document (.docx).
+        path (str | Path): Path to the Word document (.docx).
         ocr (bool, optional): Flag indicating whether to process document images with OCR. Defaults to False.
 
     Returns:

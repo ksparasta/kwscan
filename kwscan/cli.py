@@ -12,7 +12,7 @@ from .ocr import init_ocr
 from .scanner import map_folder, scan_files, SUPPORTED_TYPES, SUPPORTED_IMAGE_TYPES
 
 
-def existing_path(value):
+def existing_path(value: str) -> Path:
     """Validate that the provided path exists and is a directory or a supported filetype.
 
     Args:
@@ -38,7 +38,7 @@ def existing_path(value):
         )
     return path 
 
-def workers_number(value):
+def workers_number(value: str) -> int:
     """Validate that the worker count argument is a positive integer.
 
     Args:
@@ -104,22 +104,22 @@ def parse_args():
 
     return parser.parse_args()
 
-def log_results(matching_files):
+def log_results(matching_files: list[dict]) -> None:
     """Log files that successfully matched the keyword search criteria.
 
     Args:
-        matching_files (list of dict): List containing file metadata dictionaries for matches.
+        matching_files (list[dict]): List containing file metadata dictionaries for matches.
     """
 
     print(f"{len(matching_files)} matching files found:\n")
     for file in matching_files:
         print(f"{file['file']}")
 
-def log_errors(errors):
+def log_errors(errors: list[dict]) -> None:
     """Log errors encountered during file scanning and processing.
 
     Args:
-        errors (list of dict): List containing file path and error details for failed files.
+        errors (list[dict]): List containing file path and error details for failed files.
     """
 
     if not errors:
@@ -130,7 +130,7 @@ def log_errors(errors):
         print(f"{error['file']}")
         print(f"  Error: {error['error']}\n")
 
-def main():
+def main() -> None:
     """Execute the primary execution flow of the kwscan CLI tool."""
 
     args = parse_args()
